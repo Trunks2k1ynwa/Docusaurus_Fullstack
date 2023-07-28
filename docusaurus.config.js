@@ -69,20 +69,26 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'tutorial/intro',
+            docId: 'frontend/intro',
             position: 'left',
             label: 'FrontEnd',
+          },
+          {
+            type: 'doc',
+            docId: 'tutorial/intro',
+            position: 'left',
+            label: 'Get started',
+          },
+          {
+            type:'doc',
+            docId: 'backend/index',
+            label: 'Backend',
+            position: 'left',
           },
           {
             to:'/blog',
             label: 'Blog',
             position: 'left'
-          },
-          {
-            type:'doc',
-            docId: 'javascript/index',
-            label: 'Javascript',
-            position: 'right',
           },
         ],
       },
