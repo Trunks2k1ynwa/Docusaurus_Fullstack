@@ -14,9 +14,9 @@ useEffect(setup,dependencies?)
 ### cleanUp function
 - Chạy khi component re-render hoặc khi unmonted khỏi DOM
 ## How it work
-- `component mount` : jsx -> side-effect
-- `component update`: jsx -> cleanup(old_value) -> side-effect(new_value)
-- `component unmount` : jsx -> cleanup
+- `component mount` : jsx -> side-effect = `componentDidMount`
+- `component update`: jsx -> cleanup(old_value) -> side-effect(new_value) = `componentDidUpdate`
+- `component unmount` : jsx -> cleanup = `componentWillUnmount`
 ## dependencies
 - List value : state, props, value, function được khai báo trong component
 ```js
