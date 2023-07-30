@@ -20,3 +20,30 @@ const [state, setState] = useState(initialState);
 ```
 - React sẽ bỏ qua việc re-render nếu `state` cần update bằng với `state` trước đó
 - React sẽ update nhiều `state` và re-render lại 1 lần duy nhất thay vì sẽ re-render lại khi có `set function`. Đây là cơ chết **batching state update**
+## Immer
+- Immer là package cho phép bạn làm việc với `state` như object, array và thực hiện việc update 1 cách  `immutable` hơn là `useState`, sẽ làm cho object, array update theo `mutated`
+- Hàm set function của `useImmer` sẽ chỉ set thuộc tính, phần tử cần update chứ không cần return ra object, array sau khi update
+- Điều này giúp tránh việc spread,nesting, deep copy
+```js
+const [todos, setTodos] = useImmer([
+    {
+      id: "React",
+      title: "Learn React",
+      done: true
+    },
+    {
+      id: "Immer",
+      title: "Try Immer",
+      done: false
+    }
+  ]);
+
+  const handleToggle = useCallback((id) => {
+    setTodos((draft) => {
+      const todo = draft.find((todo) => todo.id === id);
+      todo.done = !todo.done;
+    });
+  }, []);
+``` 
+- [Tìm hiểu về Immer](https://dev.to/buiminh15/gioi-thieu-ve-immer-phan-1-4cpd)
+- [Test useState](http://localhost:3000/hooks/useState)
