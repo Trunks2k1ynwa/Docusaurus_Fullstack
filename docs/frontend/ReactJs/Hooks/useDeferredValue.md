@@ -1,7 +1,18 @@
+---
+title: useDefferedValue
+authors:
+  name: Trunks
+  title: Doc useDefferedValue
+  url: https://github.com/wgao19
+  image_url: https://github.com/wgao19.png
+tags: [Trì hoãn update state, update in background]
+---
 # useDefferedValue
-- `useDefferedValue` là 1 hook cho phép bạn trì hoãn lại việc cập nhật 1 phần trong UI
+- `useDefferedValue` là 1 hook cho phép bạn trì hoãn lại việc cập nhật `state` trong bản cập nhật hiện tại
 - Được sử dụng cho các thành phần UI tốn nhiều thời gian để tải, giảm hiện tượng lag, trễ.
 - Nó cho phép trì hoãn việc cập nhật giá trị `state` cho đến khi các tác vụ ưu tiên đã hoàn thành.
+- Sau đó nói mới cập nhật ở chế độ background
+
 ```js
 const deferredValue = useDeferredValue(value)
 ```
@@ -95,5 +106,6 @@ function SlowItem({ text }) {
 - `useDeferredValue` hiển thị UI cũ cho đến khi UI mới được loading xong
 - `useDeferredValue` thường sử dụng cho ứng dụng tìm kiếm
 - `state` và `deferredText` tương ứng với hai trạng thái mới và cũ khi cập nhật UI
-- `state` cập nhật, UI sẽ vẫn dùng `deferredText` để hiển thị cho đến khi `state` được cập nhật trong UI dưới nền xong thì `deferredText` = `state`
+- `state` cập nhật, UI sẽ vẫn dùng `deferredText` để hiển thị UI của dữ liệu cũ cho đến khi `state` được cập nhật trong UI dưới nền xong thì `deferredText` = `state`
+- Giá trị trả về `useDeferredValue` có thể được trì hoản so với giá trị thực tế để React ưu tiên những cập nhật khác quan trọng hơn.
 - [Test useDeferredValue](http://localhost:3000/hooks/UseDeferredValue)

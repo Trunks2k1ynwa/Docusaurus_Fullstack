@@ -24,7 +24,6 @@ useEffect(setup,dependencies?)
 ```
 - React sẽ so sánh từng dependency với giá trị trước đó bằng phép so sánh Object.is
 - Có ba trường hợp dependencies trong useEffect
-
 ### nothing dependencies
 - Effect bên trong sẽ được chạy sau mồi lần render và re-render của component
 ```js
