@@ -45,7 +45,6 @@ const ShippingForm = memo(function ShippingForm({ onSubmit }) {
 });
 ```
 - `ShippingForm` sẽ không bị re-render nếu tất cả props giống với props của lần render trước.
-- Nếu không có useCallback
 
 ### Cập nhật state bên trong `useCallback`
 - Đôi khi bạn muốn update state dựa trên state trước đó từ trong `useCallback`
