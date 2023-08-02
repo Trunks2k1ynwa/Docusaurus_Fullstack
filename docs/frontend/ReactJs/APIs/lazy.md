@@ -28,12 +28,13 @@ const MarkdownPreview = lazy(() => import("./MarkdownPreview.js"));
 ## Cách sử dụng
 
 ### Lazy component với Suspense
+
 ```js
-import { lazy } from 'react';
+import { lazy } from "react";
 
-const MarkdownPreview = lazy(() => import('./MarkdownPreview.js'));
-
+const MarkdownPreview = lazy(() => import("./MarkdownPreview.js"));
 ```
+
 - Để chỉ định những gì sẽ được hiển thị trong khi component đang tải. Bạn có thể sử dụng `Suspense` bằng cách gói component cha me, hoặc chính nó vào `Suspense`
 
 ```js
