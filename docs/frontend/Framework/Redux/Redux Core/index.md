@@ -1,10 +1,5 @@
 # Redux Core
 
-## Redux là gì
-
-- 1 store duy nhất chứa `state` global
-- Gửi các hành động đến `store` khi có điều gì đó xảy ra trong app
-- Các `reducer` xem xét các hành động đó và trả về `state` được cập nhật
 ## Redux core làm gì
 Redux core là 1 thư viện rất nhỏ, nó cung cấp cá API nguyên thủy như :
 - `createStore` : Tạo ra Redux store
