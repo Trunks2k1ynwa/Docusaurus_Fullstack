@@ -40,14 +40,14 @@ ReactDOM.render(
 ```
 
 ## Tạo 1 Redux Slice chứa state và các reducer
-
+- Redux ToolKit sử dụng `createSlice` sẽ viết các case `reducers` bên trong 1 object thay vì viết theo kiểu `switch/case`
 - Để tạo 1 `slice` qua `createSlice` yêu cầu:
-  - Tên của `slice` đó
-  - Giá trị `state` ban đầu
-  - Một hoặc nhiều hàm `reducer` để xác định cách update `state`
+  - `name`: Là 1 chuỗi dùng để làm tiền tố cho `action type`
+  - `initialState` : Là giá `state` khởi tạo cho `reducer`
+  - `reducers` : Là 1 object có các key là chuỗi và values là các hàm `case reducer` để xử lý các hành động cụ thể
 - Khi 1 `slice` được tạo, chúng ta sẽ `export` :
   - Các `action` ở trong `reducers` thông qua `slice.actions`
-  - `Slice` vừa tạo như một `reducer` thông qua `slice.reducer`
+  - `slice` vừa tạo như một `reducer` thông qua `slice.reducer`
 
 ```js title=features/counter/counterSlice.js
 import { createSlice } from "@reduxjs/toolkit";
@@ -71,18 +71,29 @@ export const counterSlice = createSlice({
     incrementByAmount: (state, action) => {
       state.value += action.payload;
     },
+    todoColorSelected: {
+      reducer(state, action) {
+        const { color, todoId } = action.payload
+        state.entities[todoId].color = color
+      },
+      prepare(todoId, color) {
+        return {
+          payload: { todoId, color }
+        }
+      }
+    },
   },
 });
 
-// Action creators are generated for each case reducer function
 export const { increment, decrement, incrementByAmount } = counterSlice.actions;
-
 export default counterSlice.reducer;
+// Sử dụng
+dispatch(increment()) = dispatch({type:'counter/increment'})
 ```
-
-- `Slice` cũng tựa như `Reducer` đều chứa `initialState` và `action`
-- Thay vì sử dụng `switch-case` như `reducer` thì `slice` sử dụng function và `export` ra từng `action` sẽ dễ nhìn và gọn gàng hơn
-
+- `createSlice` tự động tạo ra các `action creators`
+- `createSlice` cho phép chúng tao bảo vệ sự `mutate` của `state`
+- `createSlice` cho phép xử lý các tình huống bằng việc thêm `prepare` vào reducer. Chúng ta cần truyền 1 object với 2 function là `reducer` và `prepare`
+- Khi gọi `action creators`, `prepare` sẽ được gọi với các tham số được truyền vào. Nó sẽ phải return object chứa trường`payload`, `payload` này sẽ là giá trị trong `action` ở `reducer`.
 ## Thêm Slice Reducers đến Store
 
 - Thêm `slice` vào `store` để yêu cầu `store` sử dụng các chức năng của `slice` để xử lý tất cả các cập nhật cho `state` đo

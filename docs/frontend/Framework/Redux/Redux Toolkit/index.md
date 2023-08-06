@@ -12,6 +12,57 @@
   - Tự động tạo các hàm `action` cho mỗi `reducer`
   - Tự động tạo các `action type` dựa trên tên của `reducer`
 
+## Chuẩn hóa State dữ liệu
+
+- `createEntityAdapter` api của Redux-toolkit xây dựng sẵn các reducers cho các hoạt động cập nhật dữ liệu với trạng thái chuẩn hóa. Nó bao gồm : Thêm, Cập nhật , Xóa item từ Slice
+- `createEntityAdapter` cũng tạo ra một số `selectors` được ghi nhớ để đọc các giá trị từ store
+
+### Cách sử dụng
+
+- Thay thế reducer với `createEntityAdapter`
+- Gọi `createEntityAdapter` cho chúng ta các `adapter` object chứa các `reducer` được tạo sẵn gồm :
+  - `addOne`/`addMany`: add new items vào state
+  - `upsertOne`/`upsertMany`: thêm 1 item mới hoặc cập nhật item đã tồn tại
+  - `updateOne`/`updateMany`: Cập nhật item hiện có
+  - `removeOne`/`removeMany`: Xóa item dựa trên IDs
+  - `setAll` : Thay thế tất cả item tồn tại
+- Chúng ta có thể sử dụng các chức năng này như `case reducers` hoặc `mutating helpers` bên trong `createSlice`
+
+```js title= todosSlice.js
+const todosAdapter = createEntityAdapter();
+const initialState = todosAdapter.getInitialState({
+  status: "idle",
+});
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState,
+  reducers: {
+    // Use an adapter reducer function to remove a todo by ID
+    todoDeleted: todosAdapter.removeOne,
+    completedTodosCleared(state, action) {
+      const completedIds = Object.values(state.entities)
+        .filter((todo) => todo.completed)
+        .map((todo) => todo.id);
+      // Use an adapter function as a "mutating" update helper
+      todosAdapter.removeMany(state, completedIds);
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        todosAdapter.setAll(state, action.payload);
+        state.status = "idle";
+      })
+      // Use another adapter function as a reducer to add a todo
+      .addCase(saveNewTodo.fulfilled, todosAdapter.addOne);
+  },
+});
+```
+
 ## Ví dụ cơ bản về RTK
 
 ```js title=todosSlice.js

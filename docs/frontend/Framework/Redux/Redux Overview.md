@@ -54,9 +54,8 @@ const addTodoAction = {
 ```
 
 ### Actions Creators
-
-- Là hàm trả về một đối tượng `action`. Thường sử dụng những thứ này để không phải viết lại đối tượng `action` bằng tay mỗi lần :
-
+- Là hàm trả về một object `action`. Thường sử dụng những thứ này để không phải viết lại đối tượng `action` bằng tay mỗi lần :
+- Tham số đầu tiên trong function `action creator` chính là `payload`
 ```js
 const addTodo = (text) => {
   return {
@@ -64,7 +63,14 @@ const addTodo = (text) => {
     payload: text,
   };
 };
+// Sử dụng
+dispatch(addTodo('Todo'))
 ```
+#### Thunk action creator
+- Trong `Redux thunk,` 1 `async thunk` được tạo bằng `createAsyncThunk` truyền vào 1 `thunk action creator`
+### payload creator
+- Là 1 function tạo và trả về 1 action `object` với `payload`
+- `payload creator` nhận vào 1 tham số chính là giá trị của payload
 
 ### Reducers
 
