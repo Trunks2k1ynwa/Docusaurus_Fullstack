@@ -3,7 +3,7 @@ title: RTK Query Basics
 ---
 
 ## Tổng quan về RTK Query
-
+- Redux khuyến khích sử dụng RTK query for data fetching
 - Công cụ fetching và caching data
 - RTK chủ yếu bao gồm 2 APIs chính :
   - `createApi()` : Xác định 1 tập hợp các `endpoint` môt tả truy xuất data từ `endpoint` đó, gồm cấu hình để tìm nạp và chuyển đổi dữ liệu
@@ -60,6 +60,7 @@ export default configureStore({
     notifications: notificationsReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
+  // Add the RTK Query API middleware
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 });

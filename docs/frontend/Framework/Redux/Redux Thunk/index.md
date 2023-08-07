@@ -5,7 +5,7 @@ title: Redux Thunk
 # Thunks
 
 - Redux Toolkit có `createAsyncThunk` API sẽ tạo ra các thunk
-- Nó cũng sẽ sinh ra `action types` và `action creator` cho các request status và `dispatche` các `action` đó tự động dựa trên kết quả `Promise`
+- Nó cũng sẽ sinh ra `action types` và `action creator` cho các request status và `dispatch` các `action` đó tự động dựa trên kết quả `Promise`
 
 ## Sử dụng createAsyncThunk
 
@@ -14,7 +14,15 @@ title: Redux Thunk
   - 1 `payload creator` function trả về 1 `promise`. Nó thường viết sử dụng cú pháp `async/await`. Khi `async` function sẽ tự động return `promise`
 
 ```js title = todosSlice.js
+const initialState = {
+  status: "uninitialized",
+  todos: [],
+  error: null,
+};
 export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
+  // This will automatically dispatch a `pending` action first,
+  // and then `fulfilled` or `rejected` actions based on the promise.
+  // as needed based on the
   const response = await client.get("/fakeApi/todos");
   return response.todos;
 });
@@ -25,18 +33,22 @@ const todosSlice = createSlice({
     // omit reducer cases
   },
   extraReducers: (builder) => {
+    // Use `extraReducers` to handle actions that were generated
+    // _outside_ of the slice, such as thunks or in other slices
     builder
       .addCase(fetchTodos.pending, (state, action) => {
         state.status = "loading";
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
-        const newEntities = {};
-        action.payload.forEach((todo) => {
-          newEntities[todo.id] = todo;
-        });
-        state.entities = newEntities;
-        state.status = "idle";
-      });
+        // Same "mutating" update syntax thanks to Immer
+        state.status = "succeeded";
+        state.todos = action.payload;
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.status = 'failed'
+        state.todos = []
+        state.error = action.error
+      })
   },
 });
 ```

@@ -1,5 +1,5 @@
 ---
-title: Setup Redux Toolkit
+title: Usage Redux Toolkit
 ---
 
 # Cách sử dụng
@@ -16,13 +16,16 @@ npm install @reduxjs/toolkit react-redux
 - Tạo 1 Redux store trống và import nó :
 
 ```js title=app/store.js
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
+import rootReducer from './reducers'
 
-export default configureStore({
-  reducer: {},
-});
+const store = configureStore({
+  reducer: rootReducer,
+})
+
+export default store
 ```
-
+- Bạn có thể truyền các `slice reducers` và `configureStore` sẽ gọi `combineReducers` cho bạn
 ## Cung cấp Redux Store này đến React
 
 - Sau khi tạo `store`, chúng ta sẽ cung cấp `store` cho React component bằng cách đặt React component bên trong `<Prodiver></Prodiver>` và truyền `props` `store` bằng `store` mà bạn đã tạo
@@ -39,16 +42,50 @@ ReactDOM.render(
 );
 ```
 
-## Tạo 1 Redux Slice chứa state và các reducer
-- Redux ToolKit sử dụng `createSlice` sẽ viết các case `reducers` bên trong 1 object thay vì viết theo kiểu `switch/case`
-- Để tạo 1 `slice` qua `createSlice` yêu cầu:
-  - `name`: Là 1 chuỗi dùng để làm tiền tố cho `action type`
-  - `initialState` : Là giá `state` khởi tạo cho `reducer`
-  - `reducers` : Là 1 object có các key là chuỗi và values là các hàm `case reducer` để xử lý các hành động cụ thể
-- Khi 1 `slice` được tạo, chúng ta sẽ `export` :
-  - Các `action` ở trong `reducers` thông qua `slice.actions`
-  - `slice` vừa tạo như một `reducer` thông qua `slice.reducer`
+## Reducers
+- `Reducers` là khái niệm quan trọng trong concept của Redux. Đặc trưng cần có 
+  + Xem xét trường `type` của `action` object để phản hồi lại như thế nào
+  + Cập nhật `state` `immutably`,bằng cách tạo các bản sao của các phần của trạng thái cần thay đổi và chỉ sửa đổi các bản sao đó
+### Reducers với createReducer
+```js
+const todosReducer = createReducer([], (builder) => {
+  builder
+    .addCase('ADD_TODO', (state, action) => {
+      // "mutate" the array by calling push()
+      state.push(action.payload)
+    })
+    .addCase('TOGGLE_TODO', (state, action) => {
+      const todo = state[action.payload.index]
+      // "mutate" the object by overwriting a field
+      todo.completed = !todo.completed
+    })
+    .addCase('REMOVE_TODO', (state, action) => {
+      // Can still return an immutably-updated value if we want to
+      return state.filter((todo, i) => i !== action.payload.index)
+    })
+})
+```
+### Reducer từ Slices với createSlice
+- Redux toolkit sử dụng `createSlice` sẽ tự động tạo ra `action types` và `action creators` cho bạn, dựa trên tên của `reducers` bạn cung cấp
+```js
+const postsSlice = createSlice({
+  name: 'posts',
+  initialState: [],
+  reducers: {
+    createPost(state, action) {},
+    updatePost(state, action) {},
+    deletePost(state, action) {},
+  },
+})
+const { actions, reducer } = postsSlice
+export const { createPost, updatePost, deletePost } = actions
+export default reducer
 
+console.log(createPost({ id: 123, title: 'Hello World' }))
+// {type : "posts/createPost", payload : {id : 123, title : "Hello World"}}
+```
+- `createSlice` sẽ xem tất cả các function trong `reducers` đã định nghĩa như `case reducers` -> `action creator`, nó sẽ dựa theo tên của `reducer` như `action types` cho từng trường hợp
+- `createSlice` cho phép chúng tao bảo vệ sự `mutate` của `state`
 ```js title=features/counter/counterSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -59,10 +96,6 @@ export const counterSlice = createSlice({
   },
   reducers: {
     increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
       state.value += 1;
     },
     decrement: (state) => {
@@ -90,10 +123,44 @@ export default counterSlice.reducer;
 // Sử dụng
 dispatch(increment()) = dispatch({type:'counter/increment'})
 ```
-- `createSlice` tự động tạo ra các `action creators`
-- `createSlice` cho phép chúng tao bảo vệ sự `mutate` của `state`
+
 - `createSlice` cho phép xử lý các tình huống bằng việc thêm `prepare` vào reducer. Chúng ta cần truyền 1 object với 2 function là `reducer` và `prepare`
 - Khi gọi `action creators`, `prepare` sẽ được gọi với các tham số được truyền vào. Nó sẽ phải return object chứa trường`payload`, `payload` này sẽ là giá trị trong `action` ở `reducer`.
+## Action Creators
+- `Redux` khuyến khích viết các hàm `action creator` đóng gọi quá trị tạo một `action` object
+- `Action Creator` là 1 function có 1 tham số và return ra object chứa 2 trường `type`,`payload` có giá trị là tham số truyền vào
+```js
+function addTodo(text) {
+  return {
+    type: 'ADD_TODO',
+    payload: { text },
+  }
+}
+```
+### Định nghĩa Action Creators với createAction
+- Tạo `action creator` sử dụng `createAction` truyền vào `action type`
+- Khi gọi `action Creator` chỉ cần truyền vào `payload` sẽ tự động trả về `{type:action type,payload}`
+```js
+const addTodo = createAction('ADD_TODO')
+addTodo({ text: 'Buy milk' })
+// {type : "ADD_TODO", payload : {text : "Buy milk"}})
+```
+#### Sử dụng action creator như action types trong reducer
+```js
+const actionCreator = createAction('SOME_ACTION_TYPE')
+console.log(actionCreator.toString())
+// "SOME_ACTION_TYPE"
+console.log(actionCreator.type)
+// "SOME_ACTION_TYPE"
+const reducer = createReducer({}, (builder) => {
+  // actionCreator.toString() will automatically be called here
+
+  builder.addCase(actionCreator, (state, action) => {})
+  // Or, you can reference the .type field:
+  // if using TypeScript, the action type cannot be inferred that way
+  builder.addCase(actionCreator.type, (state, action) => {})
+})
+```
 ## Thêm Slice Reducers đến Store
 
 - Thêm `slice` vào `store` để yêu cầu `store` sử dụng các chức năng của `slice` để xử lý tất cả các cập nhật cho `state` đo
@@ -138,6 +205,18 @@ export function Counter() {
   )
 }
 ```
+## Trích xuất Selectors
+
+```js
+export const selectAllPosts = (state) => state.posts;
+// Sử dụng
+const posts = useSelector(selectAllPosts);
+
+export const selectPostById = (state, postId) =>
+  // Sử dụng
+  state.posts.find((post) => post.id === postId);
+const post = useSelector((state) => selectPostById(state, postId));
+```s
 - Do Redux `toolkit` sử dụng `createSlice` nên khi `dispatch` 1 `action`, `action` sẽ thường là hàm gọi function action trong `slice` được export ra hoặc là `{type:'tên reducer/tên function actions'}`
 - Vd:` dispath({type: "counter/increment"})` = `dispatch(increment())`
 
