@@ -1,4 +1,4 @@
-# Redux Toolkit Overview
+# Redux Toolkit
 
 **RTK cung cấp các API có sẵn để setup thay vì sử dụng `boilerplate` theo cách viết logic tay của Redux**
 
@@ -71,7 +71,7 @@ const todosSlice = createSlice({
 });
 ```
 
-## Ví dụ cơ bản về RTK
+## Các thành phần chính của RTL
 
 ### Redux Store
 
@@ -81,82 +81,17 @@ const todosSlice = createSlice({
 - `middleware thunk` tự động được thêm vào
 - `Redux Devtools` được thiếp lập tự động
 - `middleware` và `DevTools` được kết hợp với nhau và thêm vào `store`
-
-```js title=store.js
-import { configureStore } from "@reduxjs/toolkit";
-import todosReducer from "../features/todos/todosSlice";
-import filtersReducer from "../features/filters/filtersSlice";
-
-export const store = configureStore({
-  reducer: {
-    todos: todosReducer,
-    filters: filtersReducer,
-  },
-});
-```
-
-### Provide Store to React
-
-```js
-import { store } from "./app/store";
-import { Provider } from "react-redux";
-
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root"),
-);
-```
-
+- `store` được tạo từ `configureStore` sẽ có các methods :
+  + `subscribe`
+  + `dispatch`
+  + `getState`
+  + `subscribe`
 ### Redux state Slice
 
-```js title=todosSlice.js
-import { createSlice } from "@reduxjs/toolkit";
 
-const todosSlice = createSlice({
-  name: "todos",
-  initialState: [],
-  reducers: {
-    todoAdded(state, action) {
-      state.push({
-        id: action.payload.id,
-        text: action.payload.text,
-        completed: false,
-      });
-    },
-    todoToggled(state, action) {
-      const todo = state.find((todo) => todo.id === action.payload);
-      todo.completed = !todo.completed;
-    },
-  },
-});
-// Export action creator
-export const { todoAdded, todoToggled } = todosSlice.actions;
-// Export reducer funtion
-export default todosSlice.reducer;
-```
-
-- Các `action` types được tạo tự động qua function (`todoAdded`,`todoToggled`)
-- Code bên trong `reducer` ngắn và dễ hiểu hơn
-- Nó cũng rõ ràng hơn nhiều những gì thực sự được cập nhật trong từng trường hợp so với `Redux Core`
 
 ### Sử dụng Redux State và Action trong React Component
 
-```js
-export function Counter() {
-  const count = useSelector((state) => state.counter.value);
-  const dispatch = useDispatch();
-
-  return (
-    <div>
-      <button onClick={() => dispatch(increment())}>Increment</button>
-      <span>{count}</span>
-      <button onClick={() => dispatch(decrement())}>Decrement</button>
-    </div>
-  );
-}
-```
 
 ## Tổng Quát
 

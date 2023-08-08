@@ -216,7 +216,7 @@ export const selectPostById = (state, postId) =>
   // Sử dụng
   state.posts.find((post) => post.id === postId);
 const post = useSelector((state) => selectPostById(state, postId));
-```s
+```
 - Do Redux `toolkit` sử dụng `createSlice` nên khi `dispatch` 1 `action`, `action` sẽ thường là hàm gọi function action trong `slice` được export ra hoặc là `{type:'tên reducer/tên function actions'}`
 - Vd:` dispath({type: "counter/increment"})` = `dispatch(increment())`
 
