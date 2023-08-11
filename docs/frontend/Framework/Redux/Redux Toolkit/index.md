@@ -71,7 +71,7 @@ const todosSlice = createSlice({
 });
 ```
 
-## Các thành phần chính của RTL
+## Các thành phần chính của RTK
 
 ### Redux Store
 
@@ -85,13 +85,19 @@ const todosSlice = createSlice({
   + `subscribe`
   + `dispatch`
   + `getState`
-  + `subscribe`
 ### Redux state Slice
 
-
-
-### Sử dụng Redux State và Action trong React Component
-
+### Dispatch và Selector
+#### Dispatch
+#### Selector
+- `useSelector` dùng để lấy ra `state` trong `store`
+- Truyền vào 1 function chứa tham số là state và return dữ liệu cần lấy
+- `state` là 1 object chứa các key = `tên reducer`
+```js
+  const post = useSelector(state =>
+    state.posts.find(post => post.id === postId)
+  )
+```
 
 ## Tổng Quát
 
