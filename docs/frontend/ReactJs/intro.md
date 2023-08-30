@@ -43,7 +43,7 @@ const cachedValue = useMemo(calculateValue, dependencies)
 ## 5.useRef
 - `useRef` là 1 hook cho phép bạn tham chiếu đến 1 giá trị, cái mà không cần thiết trong quá trình render
 - `useRef` trả về 1 object với 1 thuộc tính duy nhất là `current`
-- Khi truyền `ref` dưới dạng props ở component còn thì phải có `fowardRef`
+- Khi truyền `ref` dưới dạng props ở component con thì phải có `fowardRef`
 ```js
 const ref = useRef(initialValue)
 ```

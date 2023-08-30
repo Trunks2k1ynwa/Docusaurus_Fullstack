@@ -23,6 +23,7 @@
 - Xóa phần tử cuối và trả về phần tử đó
 ### push(v1, v2)	
 - Thêm 1 hoặc nhiều phần tử vào cuối mảng
+- Return độ dài mới của mảng
 ### reverse()	
 ### shift()	
 - Xóa phần tử đầu và trả về phần tử đó
@@ -30,10 +31,12 @@
 ### splice()	
 - Thêm hoặc xóa nhiều phần tử ra khỏi mảng
 ### unshift(v1, v2)
-- Thêm 1 hoặc nhiều phần tử vào phía trước của mảng và trả về độ dài mới của mảng
+- Thêm 1 hoặc nhiều phần tử vào phía trước của mảng và 
+- Return độ dài mới của mảng
 ## Các method khác
 ### concat()
 - Nối các mảng với nhau
+- Return mảng mới chứa các mảng được sau khi nối
 ### entries()
 - Trả về `array iterator` object chứa key/value dựa trên index/giá trị tại index đó
 ### join()
