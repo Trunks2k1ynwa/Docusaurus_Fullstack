@@ -23,7 +23,10 @@ firstFunction();
 ## Web API
 - Là 1 chức năng mà trình duyệt cung cấp cho js để thực thi các tác vụ một cách bất đồng bộ, non-blocking
 - DOM API, setTimout, http request
-## Queue
+## MicroTask Queue
+- Chứa các công việc (tasks) nhỏ hơn, có ưu tiên hơn so với callback queue (hàng đợi callback)
+- Chúng thường được thực hiện ngay sau khi call stack trống, trước khi xử lý các công việc trong callback queue.
+## CallbackQueue, task queue
 - Hàng đợi là nơi các WebAPI dừng lại để đợi khi `CallStack` trống thì mới được `event loop` đưa vào `callstack`
 - Hoạt động theo cơ chế first in first out
 ## OutPut
@@ -34,5 +37,7 @@ firstFunction();
 - Nếu trong hàm không chứa các tác vụ bất đồng bộ thì nó sẽ ném kết quả ra `output` và hiển thị lên trình duyệt
 - Nếu trong hàm chứa các task bất đồng bộ được cung cấp bởi `Web APIS`
 - Tác vụ này sẽ được thêm vào `Web API` để xử lý
-- Sau khi xử lý xong thì `task` này sẽ được chuyển đến `Queue`(hàng đợi) để chờ
-- Nếu trong `Call stack` trống thì `event loop` sẽ chuyển `task` đầu tiên đang đợi vào `Call stack` để thực thi và hiển thị ra `output`
+- Sau khi xử lý xong thì kiểm tra`task` này :
+    + nếu `task` đó được ưu tiên hơn như : fetch data, promise, Mutation Observer callbacks thì sẽ chuyển đến `MicroTask Queue` 
+    + nếu `task` đó ko được ưu tiên như : setTimeOut, setInterval thì sẽ chuyển đến `Callback queue` 
+- Nếu trong `Call stack` trống thì `event loop` sẽ chuyển `task` đầu tiên đang đợi ở `MicroTask Queue` nếu có trước, rồi mới đến `callback queue` vào `Call stack` để thực thi và hiển thị ra `output`
